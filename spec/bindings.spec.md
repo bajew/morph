@@ -199,14 +199,14 @@ Determines what is shown to the user.
 
 May be a raw string.
 
-May be a localized string.
+Must be a plain string.
 
 Example item:
 
 ```json
 {
   "id": 2,
-  "title": { "key": "material.tools", "default": "Tools" }
+  "title": "Tools"
 }
 ```
 
@@ -239,9 +239,9 @@ Bindings are used inside action payloads and effects.
 }
 ```
 
-## 9. Localization in Bindings
+## 9. Display Strings in Bindings
 
-Bindings themselves are not localized. Localization applies to display fields.
+Bindings themselves are not display strings. Display fields use plain strings.
 
 Example:
 
@@ -255,11 +255,11 @@ Where each item contains:
 
 ```json
 {
-  "title": { "key": "material.tools", "default": "Tools" }
+  "title": "Tools"
 }
 ```
 
-The UI runtime resolves localized strings.
+The UI runtime displays the string value.
 
 ## 10. Examples
 

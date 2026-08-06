@@ -53,7 +53,7 @@ An action describes a behavior triggered by the user or system.
 ```json
 Action {
   "id": "string",
-  "title": LocalizedString,
+  "title": "string",
   "type": "rpc" | "navigate" | "state.update" | "state.reset" | "ui.notify",
   "method": "string"?,
   "parameters": object?,
@@ -82,7 +82,7 @@ Unique identifier.
 
 title
 
-LocalizedString
+string
 
 yes
 
@@ -106,7 +106,7 @@ Calls a backend RPC method.
 {
   "id": "bookEntry",
   "type": "rpc",
-  "title": { "key": "action.book", "default": "Book" },
+  "title": "Book",
   "method": "BookEntry",
   "parameters": {
     "barcode": "@state.barcode",
@@ -150,7 +150,7 @@ Navigates to another page.
 {
   "id": "goToDashboard",
   "type": "navigate",
-  "title": { "key": "action.dashboard", "default": "Dashboard" },
+  "title": "Dashboard",
   "parameters": {
     "target": "page.dashboard",
     "parameters": { "filter": "active" }
@@ -192,7 +192,7 @@ Updates state values.
 {
   "id": "updateMaterial",
   "type": "state.update",
-  "title": { "key": "action.updateMaterial", "default": "Update Material" },
+  "title": "Update Material",
   "parameters": {
     "targets": {
       "state.material.locked": false,
@@ -229,7 +229,7 @@ Resets state values.
 {
   "id": "resetForm",
   "type": "state.reset",
-  "title": { "key": "action.reset", "default": "Reset" },
+  "title": "Reset",
   "parameters": {
     "targets": ["barcode", "entryType", "locked", "amount"]
   }
@@ -262,9 +262,9 @@ Displays a message.
 {
   "id": "showSuccess",
   "type": "ui.notify",
-  "title": { "key": "action.notify", "default": "Notify" },
+  "title": "Notify",
   "parameters": {
-    "message": { "key": "msg.success", "default": "Operation completed." }
+    "message": "Operation completed."
   }
 }
 ```
@@ -281,7 +281,7 @@ Description
 
 message
 
-LocalizedString
+string
 
 yes
 
@@ -337,7 +337,7 @@ Effects describe what happens after an action succeeds or fails.
 ActionEffect {
   "action": "state.update" | "state.reset" | "ui.notify" | "navigate",
   "targets": object?,
-  "message": LocalizedString?,
+  "message": "string"?,
   "parameters": object?
 }
 ```
@@ -351,7 +351,7 @@ Example:
 ```json
 "onSuccess": [
   { "action": "state.reset", "targets": ["barcode", "entryType"] },
-  { "action": "ui.notify", "message": { "key": "msg.success", "default": "Entry booked." } }
+  { "action": "ui.notify", "message": "Entry booked." }
 ]
 ```
 
@@ -433,23 +433,9 @@ Actions may reference state, wizard, application, source, computed, and error da
 }
 ```
 
-## 9. Localization in Actions
+## 9. Strings in Actions
 
-Actions may contain localized strings:
-
-Titles
-
-Notification messages
-
-Navigation parameters
-
-Example:
-
-```json
-{
-  "title": { "key": "action.book", "default": "Book" }
-}
-```
+Action titles and notification messages are plain strings.
 
 ## 10. Examples
 
@@ -458,7 +444,7 @@ Example:
 ```json
 {
   "id": "bookEntry",
-  "title": { "key": "action.book", "default": "Book" },
+  "title": "Book",
   "type": "rpc",
   "method": "BookEntry",
   "parameters": {
@@ -469,7 +455,7 @@ Example:
   },
   "onSuccess": [
     { "action": "state.reset", "targets": ["barcode", "entryType", "locked", "amount"] },
-    { "action": "ui.notify", "message": { "key": "msg.success", "default": "Entry booked successfully." } }
+    { "action": "ui.notify", "message": "Entry booked successfully." }
   ],
   "onFailure": [
     { "action": "ui.notify", "message": "@rpcError.message" }
@@ -482,7 +468,7 @@ Example:
 ```json
 {
   "id": "goToDashboard",
-  "title": { "key": "action.dashboard", "default": "Dashboard" },
+  "title": "Dashboard",
   "type": "navigate",
   "parameters": {
     "target": "page.dashboard"
@@ -495,7 +481,7 @@ Example:
 ```json
 {
   "id": "updateSettings",
-  "title": { "key": "action.updateSettings", "default": "Update Settings" },
+  "title": "Update Settings",
   "type": "state.update",
   "parameters": {
     "targets": {
@@ -510,10 +496,10 @@ Example:
 ```json
 {
   "id": "showError",
-  "title": { "key": "action.error", "default": "Error" },
+  "title": "Error",
   "type": "ui.notify",
   "parameters": {
-    "message": { "key": "msg.error", "default": "An error occurred." }
+    "message": "An error occurred."
   }
 }
 ```

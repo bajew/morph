@@ -197,9 +197,9 @@ Provides fixed data.
   "type": "static",
   "parameters": {
     "items": [
-      { "id": 1, "title": { "key": "material.machines", "default": "Machines" } },
-      { "id": 2, "title": { "key": "material.tools", "default": "Tools" } },
-      { "id": 3, "title": { "key": "material.misc", "default": "Misc" } }
+      { "id": 1, "title": "Machines" },
+      { "id": 2, "title": "Tools" },
+      { "id": 3, "title": "Misc" }
     ]
   }
 }
@@ -229,7 +229,7 @@ Always available.
 
 Ideal for fixed dropdowns.
 
-Supports localized fields.
+Uses plain string fields.
 
 ## 5. Cache Configuration
 
@@ -353,20 +353,20 @@ Fields may bind directly to sources.
 }
 ```
 
-## 9. Localization in Sources
+## 9. Display Strings in Sources
 
-Sources may contain localized fields.
+Sources may contain plain string display fields.
 
 Example:
 
 ```json
 {
   "id": 2,
-  "title": { "key": "material.tools", "default": "Tools" }
+  "title": "Tools"
 }
 ```
 
-The UI runtime resolves localized strings.
+The UI runtime displays the string value.
 
 ## 10. Examples
 
@@ -406,9 +406,9 @@ The UI runtime resolves localized strings.
   "type": "static",
   "parameters": {
     "items": [
-      { "id": 1, "title": { "key": "material.machines", "default": "Machines" } },
-      { "id": 2, "title": { "key": "material.tools", "default": "Tools" } },
-      { "id": 3, "title": { "key": "material.misc", "default": "Misc" } }
+      { "id": 1, "title": "Machines" },
+      { "id": 2, "title": "Tools" },
+      { "id": 3, "title": "Misc" }
     ]
   }
 }

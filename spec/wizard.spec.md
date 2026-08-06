@@ -52,7 +52,7 @@ Stored in a DynamicStateContainer.
 ```json
 Wizard {
   "id": "string",
-  "title": LocalizedString,
+  "title": "string",
   "steps": Step[],
   "completion": Action[]
 }
@@ -63,7 +63,7 @@ Wizard {
 ```json
 Step {
   "id": "string",
-  "title": LocalizedString,
+  "title": "string",
   "fields": Field[],
   "actions": Action[],
   "validation": ValidationRule[]?
