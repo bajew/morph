@@ -55,6 +55,7 @@ Source {
   "id": "string",
   "type": "rpc" | "state" | "static",
   "parameters": { ... },
+  "data": array | object?,
   "cache": CacheConfig?,
   "onError": ErrorHandling?
 }
@@ -93,6 +94,14 @@ object
 no
 
 Configuration for the source.
+
+data
+
+array or object
+
+required for static sources
+
+Embedded data returned by a static source. Ignored for all other source types.
 
 ## 4. Source Types
 
@@ -195,17 +204,15 @@ Provides fixed data.
 {
   "id": "materialTypes",
   "type": "static",
-  "parameters": {
-    "items": [
-      { "id": 1, "title": "Machines" },
-      { "id": 2, "title": "Tools" },
-      { "id": 3, "title": "Misc" }
-    ]
-  }
+  "data": [
+    { "id": 1, "title": "Machines" },
+    { "id": 2, "title": "Tools" },
+    { "id": 3, "title": "Misc" }
+  ]
 }
 ```
 
-Static Parameters
+Static Data
 
 Field
 
@@ -215,13 +222,13 @@ Required
 
 Description
 
-items
+data
 
 array
 
 yes
 
-Static list of objects.
+Static data returned by the source.
 
 Static Behavior
 
@@ -404,13 +411,11 @@ The UI runtime displays the string value.
 {
   "id": "materialTypes",
   "type": "static",
-  "parameters": {
-    "items": [
-      { "id": 1, "title": "Machines" },
-      { "id": 2, "title": "Tools" },
-      { "id": 3, "title": "Misc" }
-    ]
-  }
+  "data": [
+    { "id": 1, "title": "Machines" },
+    { "id": 2, "title": "Tools" },
+    { "id": 3, "title": "Misc" }
+  ]
 }
 ```
 
