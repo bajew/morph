@@ -1,0 +1,20 @@
+{
+  "id": "page.maintenance",
+  "type": "page",
+  "title": "Maintenance",
+  "sources": ["source.tools"],
+  "fields": [
+    { "id": "lbl", "type": "label", "text": "Enter tool ID to toggle maintenance:" },
+    { "id": "id", "type": "text" }
+  ],
+  "actions": [
+    {
+      "id": "submit",
+      "type": "rpc",
+      "rpcMethod": "CheckMaintenance",
+      "parameters": {
+        "id": "@field.id"
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "id": "source.tools",
+  "type": "source",
+  "rpcMethod": "GetTools"
+}

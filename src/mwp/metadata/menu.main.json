@@ -1,0 +1,10 @@
+{
+  "id": "menu.main",
+  "type": "menu",
+  "title": "Main Menu",
+  "items": [
+    { "title": "Store", "navigate": "menu.store" },
+    { "title": "Maintenance", "navigate": "menu.maintenance" },
+    { "title": "Archive", "navigate": "menu.archive" }
+  ]
+}

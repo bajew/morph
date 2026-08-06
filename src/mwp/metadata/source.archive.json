@@ -1,0 +1,5 @@
+{
+  "id": "source.archive",
+  "type": "source",
+  "rpcMethod": "GetArchive"
+}

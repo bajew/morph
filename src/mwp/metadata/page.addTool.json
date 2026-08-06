@@ -1,0 +1,20 @@
+{
+  "id": "page.addTool",
+  "type": "page",
+  "title": "Add Tool",
+  "sources": [],
+  "fields": [
+    { "id": "lbl", "type": "label", "text": "Enter tool name:" },
+    { "id": "name", "type": "text" }
+  ],
+  "actions": [
+    {
+      "id": "submit",
+      "type": "rpc",
+      "rpcMethod": "AddTool",
+      "parameters": {
+        "name": "@field.name"
+      }
+    }
+  ]
+}

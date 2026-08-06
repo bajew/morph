@@ -1,0 +1,10 @@
+{
+  "id": "page.listTools",
+  "type": "page",
+  "title": "Tools",
+  "sources": ["source.tools"],
+  "fields": [
+    { "id": "lbl", "type": "label", "text": "Available tools:" }
+  ],
+  "actions": []
+}

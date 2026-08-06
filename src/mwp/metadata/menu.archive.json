@@ -1,0 +1,8 @@
+{
+  "id": "menu.archive",
+  "type": "menu",
+  "title": "Archive",
+  "items": [
+    { "title": "List Archived Tools", "navigate": "page.archive" }
+  ]
+}

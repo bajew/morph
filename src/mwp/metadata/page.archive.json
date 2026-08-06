@@ -1,0 +1,10 @@
+{
+  "id": "page.archive",
+  "type": "page",
+  "title": "Archive",
+  "sources": ["source.archive"],
+  "fields": [
+    { "id": "lbl", "type": "label", "text": "Archived tools:" }
+  ],
+  "actions": []
+}

@@ -1,0 +1,10 @@
+{
+  "id": "menu.store",
+  "type": "menu",
+  "title": "Store",
+  "items": [
+    { "title": "List Tools", "navigate": "page.listTools" },
+    { "title": "Add Tool", "navigate": "page.addTool" },
+    { "title": "Delete Tool", "navigate": "page.deleteTool" }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "page.deleteTool",
+  "type": "page",
+  "title": "Delete Tool",
+  "sources": ["source.tools"],
+  "fields": [
+    { "id": "lbl", "type": "label", "text": "Enter tool ID to archive:" },
+    { "id": "id", "type": "text" }
+  ],
+  "actions": [
+    {
+      "id": "submit",
+      "type": "rpc",
+      "rpcMethod": "DeleteTool",
+      "parameters": {
+        "id": "@field.id"
+      }
+    }
+  ]
+}
