@@ -98,9 +98,21 @@ debugging tools
 
 Morph currently includes the following specifications:
 
-✔ dynamic-state-container.spec.md
+✔ dynamic-state-model.spec.md
 
 Defines the dynamic, hierarchical, observable state engine.
+
+✔ state.spec.md
+
+Defines state scopes, access rules, lifecycle, and state update actions.
+
+✔ sources.spec.md
+
+Defines RPC, state, and static data sources, including caching and fallback behavior.
+
+✔ page.spec.md
+
+Defines page structure, fields, bindings, sources, and page actions.
 
 ✔ wizard.spec.md
 
@@ -117,6 +129,10 @@ Defines binding resolution rules, path grammar, and scope resolution.
 ✔ decorators.spec.md
 
 Defines the unified semantic tag system used across all UI elements.
+
+✔ menu.spec.md
+
+Defines declarative menus, navigation entries, actions, visibility, and tags.
 
 ✔ morph.spec.md
 
