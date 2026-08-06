@@ -1,8 +1,12 @@
-Menu Specification
+# Menu Specification
 
-Version: 1.0Status: Draft (Migrated into Morph Creations)Purpose: Defines the structure, semantics, and processing rules for application menus in the Morph meta‑language. Menus provide navigational and contextual entry points into pages, wizards, and actions.
+**Version:** 1.0
 
-1. Overview
+**Status:** Draft (Migrated into Morph Creations)
+
+**Purpose:** Defines the structure, semantics, and processing rules for application menus in the Morph meta‑language. Menus provide navigational and contextual entry points into pages, wizards, and actions.
+
+## 1. Overview
 
 Menus in Morph are declarative metadata structures that describe navigational elements. They:
 
@@ -18,16 +22,18 @@ support grouping
 
 Menus do not define UI styling or layout. The UI runtime interprets menu metadata and renders it according to platform conventions.
 
-2. Menu Structure
+## 2. Menu Structure
 
 A menu is defined as:
 
+```json
 {
   "id": "mainMenu",
   "type": "menu",
   "items": [ ... ],
   "tags": [ ... ]
 }
+```
 
 Fields
 
@@ -39,16 +45,18 @@ items — array of menu items
 
 tags — semantic tags applied to the menu
 
-3. Menu Item Structure
+## 3. Menu Item Structure
 
 Menu items represent navigational entries.
 
+```json
 {
   "id": "tools",
   "title": "Tools",
   "navigate": "toolsPage",
   "tags": ["highlight"]
 }
+```
 
 Fields
 
@@ -64,7 +72,7 @@ tags — semantic tags
 
 visibleWhen — optional binding controlling visibility
 
-4. Navigation
+## 4. Navigation
 
 Menu items may navigate to:
 
@@ -76,7 +84,7 @@ Example:
 
 "navigate": "inventoryPage"
 
-5. Actions
+## 5. Actions
 
 Menu items may trigger actions instead of navigation:
 
@@ -84,7 +92,7 @@ Menu items may trigger actions instead of navigation:
 
 Actions follow the Morph action model.
 
-6. Visibility Rules
+## 6. Visibility Rules
 
 Menu items may be conditionally visible:
 
@@ -92,28 +100,33 @@ Menu items may be conditionally visible:
 
 Visibility uses the binding system defined in bindings.spec.md.
 
-7. Tags
+## 7. Tags
 
 Menu items and menus may define semantic tags:
 
+```json
 "tags": ["bold", "maintenanceDue"]
+```
 
 Tags follow the unified decorator model defined in decorators.spec.md.
 
-8. Grouping
+## 8. Grouping
 
 Menus may define groups:
 
+```json
 {
   "id": "adminGroup",
   "title": "Administration",
   "items": [ ... ]
 }
+```
 
 Groups are purely semantic; UI runtime decides how to render them.
 
-9. Example Menu
+## 9. Example Menu
 
+```json
 {
   "id": "mainMenu",
   "type": "menu",
@@ -132,8 +145,9 @@ Groups are purely semantic; UI runtime decides how to render them.
     }
   ]
 }
+```
 
-10. Future Extensions
+## 10. Future Extensions
 
 Potential future additions:
 
@@ -145,4 +159,4 @@ role-based menu filtering
 
 multi-level nested menus
 
-End of Specification
+---

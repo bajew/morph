@@ -1,8 +1,14 @@
-Actions Specification
+# Actions Specification
 
-Version: 2.0**Status: Updated Draft (Regenerated with new standard)Audience: Backend systems, UI runtime engines, AI agents, and tooling that consume or generate page metadata.Scope: Defines the structure, semantics, and processing rules for actions in the Dynamic UI Meta‑Language, including RPC error handling, binding scopes, and cross‑spec consistency.
+**Version:** 2.0
 
-1. Overview
+**Status:** Updated Draft (Regenerated with new standard)
+
+**Audience:** Backend systems, UI runtime engines, AI agents, and tooling that consume or generate page metadata.
+
+**Scope:** Defines the structure, semantics, and processing rules for actions in the Dynamic UI Meta‑Language, including RPC error handling, binding scopes, and cross‑spec consistency.
+
+## 1. Overview
 
 Actions define behavior, not layout. They describe what happens when the user triggers an event such as pressing a button, completing a wizard step, or submitting a form.
 
@@ -26,7 +32,7 @@ Completion flows
 
 Error handling flows
 
-2. Design Goals
+## 2. Design Goals
 
 Unified action model — RPC, navigation, and state updates share a common structure.
 
@@ -40,10 +46,11 @@ Offline‑capable — actions may use cached data or fallback behavior.
 
 Consistent error model — RPC errors follow a strict, typed structure.
 
-3. Action Model
+## 3. Action Model
 
 An action describes a behavior triggered by the user or system.
 
+```json
 Action {
   "id": "string",
   "title": LocalizedString,
@@ -52,8 +59,9 @@ Action {
   "onSuccess": ActionEffect[]?,
   "onFailure": ActionEffect[]?
 }
+```
 
-3.1 Required Fields
+### 3.1. Required Fields
 
 Field
 
@@ -87,12 +95,13 @@ yes
 
 Action type.
 
-4. Action Types
+## 4. Action Types
 
-4.1 RPC Action
+### 4.1. RPC Action
 
 Calls a backend RPC method.
 
+```json
 {
   "id": "bookEntry",
   "type": "rpc",
@@ -106,6 +115,7 @@ Calls a backend RPC method.
     }
   }
 }
+```
 
 RPC Parameters
 
@@ -133,10 +143,11 @@ no
 
 RPC payload.
 
-4.2 Navigation Action
+### 4.2. Navigation Action
 
 Navigates to another page.
 
+```json
 {
   "id": "goToDashboard",
   "type": "navigate",
@@ -146,6 +157,7 @@ Navigates to another page.
     "parameters": { "filter": "active" }
   }
 }
+```
 
 Navigation Parameters
 
@@ -173,10 +185,11 @@ no
 
 Optional navigation parameters.
 
-4.3 State Update Action
+### 4.3. State Update Action
 
 Updates state values.
 
+```json
 {
   "id": "updateMaterial",
   "type": "state.update",
@@ -189,6 +202,7 @@ Updates state values.
     }
   }
 }
+```
 
 State Update Parameters
 
@@ -208,10 +222,11 @@ yes
 
 Key/value pairs of state paths and new values.
 
-4.4 State Reset Action
+### 4.4. State Reset Action
 
 Resets state values.
 
+```json
 {
   "id": "resetForm",
   "type": "state.reset",
@@ -220,6 +235,7 @@ Resets state values.
     "targets": ["barcode", "entryType", "locked", "amount"]
   }
 }
+```
 
 Reset Parameters
 
@@ -239,10 +255,11 @@ yes
 
 List of state paths to reset.
 
-4.5 UI Notification Action
+### 4.5. UI Notification Action
 
 Displays a message.
 
+```json
 {
   "id": "showSuccess",
   "type": "ui.notify",
@@ -251,6 +268,7 @@ Displays a message.
     "message": { "key": "msg.success", "default": "Operation completed." }
   }
 }
+```
 
 Notification Parameters
 
@@ -270,18 +288,20 @@ yes
 
 Notification message.
 
-5. RPC Error Model
+## 5. RPC Error Model
 
 RPC actions expose a standard error object to failure effects.
 
+```json
 RpcError {
   "code": "string",
   "message": "string",
   "details": object?,
   "fieldErrors": { "<fieldId>": "string" }?
 }
+```
 
-5.1 Error Binding Namespace
+### 5.1. Error Binding Namespace
 
 Failure effects may reference:
 
@@ -293,8 +313,9 @@ Failure effects may reference:
 
 @rpcError.fieldErrors.<fieldId>
 
-5.2 Example Failure Effect
+### 5.2. Example Failure Effect
 
+```json
 "onFailure": [
   {
     "action": "ui.notify",
@@ -307,42 +328,49 @@ Failure effects may reference:
     }
   }
 ]
+```
 
-6. Action Effects
+## 6. Action Effects
 
 Effects describe what happens after an action succeeds or fails.
 
+```json
 ActionEffect {
   "action": "state.update" | "state.reset" | "ui.notify" | "navigate",
   "targets": object?,
   "message": LocalizedString?,
   "parameters": object?
 }
+```
 
-6.1 Success Effects
+### 6.1. Success Effects
 
 Triggered when an action completes successfully.
 
 Example:
 
+```json
 "onSuccess": [
   { "action": "state.reset", "targets": ["barcode", "entryType"] },
   { "action": "ui.notify", "message": { "key": "msg.success", "default": "Entry booked." } }
 ]
+```
 
-6.2 Failure Effects
+### 6.2. Failure Effects
 
 Triggered when an action fails.
 
 Example:
 
+```json
 "onFailure": [
   { "action": "ui.notify", "message": "@rpcError.message" }
 ]
+```
 
-7. Action Lifecycle
+## 7. Action Lifecycle
 
-7.1 Initialization
+### 7.1. Initialization
 
 Actions are defined in:
 
@@ -352,7 +380,7 @@ Wizard step actions array
 
 Wizard completion action
 
-7.2 Execution
+### 7.2. Execution
 
 Triggered by:
 
@@ -362,7 +390,7 @@ Wizard transitions
 
 System events
 
-7.3 Success / Failure
+### 7.3. Success / Failure
 
 RPC actions evaluate backend response.
 
@@ -372,17 +400,17 @@ State actions always succeed.
 
 Notification actions always succeed.
 
-7.4 Cleanup
+### 7.4. Cleanup
 
 Wizard completion may reset wizard state.
 
 Page navigation may reset page state.
 
-8. Interaction with Bindings
+## 8. Interaction with Bindings
 
 Actions may reference state, wizard, and application data.
 
-8.1 Payload Binding
+### 8.1. Payload Binding
 
 "payload": {
   "barcode": "@state.barcode",
@@ -390,16 +418,18 @@ Actions may reference state, wizard, and application data.
   "userId": "@app.user.id"
 }
 
-8.2 Effect Binding
+### 8.2. Effect Binding
 
+```json
 {
   "action": "state.update",
   "targets": {
     "wizard.amount": 10
   }
 }
+```
 
-9. Localization in Actions
+## 9. Localization in Actions
 
 Actions may contain localized strings:
 
@@ -411,14 +441,17 @@ Navigation parameters
 
 Example:
 
+```json
 {
   "title": { "key": "action.book", "default": "Book" }
 }
+```
 
-10. Examples
+## 10. Examples
 
-10.1 RPC Action with Success/Failure
+### 10.1. RPC Action with Success/Failure
 
+```json
 {
   "id": "bookEntry",
   "title": { "key": "action.book", "default": "Book" },
@@ -440,9 +473,11 @@ Example:
     { "action": "ui.notify", "message": "@rpcError.message" }
   ]
 }
+```
 
-10.2 Navigation Action
+### 10.2. Navigation Action
 
+```json
 {
   "id": "goToDashboard",
   "title": { "key": "action.dashboard", "default": "Dashboard" },
@@ -451,9 +486,11 @@ Example:
     "target": "page.dashboard"
   }
 }
+```
 
-10.3 State Update Action
+### 10.3. State Update Action
 
+```json
 {
   "id": "updateSettings",
   "title": { "key": "action.updateSettings", "default": "Update Settings" },
@@ -464,9 +501,11 @@ Example:
     }
   }
 }
+```
 
-10.4 Notification Action
+### 10.4. Notification Action
 
+```json
 {
   "id": "showError",
   "title": { "key": "action.error", "default": "Error" },
@@ -475,5 +514,6 @@ Example:
     "message": { "key": "msg.error", "default": "An error occurred." }
   }
 }
+```
 
-End of Specification
+---

@@ -1,8 +1,14 @@
-Sources Specification
+# Sources Specification
 
-Version: 1.0Status: DraftAudience: Backend systems, UI runtime engines, AI agents, and tooling that consume or generate page metadata.Scope: Defines the structure, semantics, and processing rules for data sources in the Dynamic UI Meta‑Language.
+**Version:** 1.0
 
-1. Overview
+**Status:** Draft
+
+**Audience:** Backend systems, UI runtime engines, AI agents, and tooling that consume or generate page metadata.
+
+**Scope:** Defines the structure, semantics, and processing rules for data sources in the Dynamic UI Meta‑Language.
+
+## 1. Overview
 
 Sources provide data to pages, fields, wizard steps, and actions. They are the primary mechanism for retrieving, caching, and exposing structured information to the UI.
 
@@ -28,7 +34,7 @@ Action payloads
 
 Application‑wide cached data
 
-2. Design Goals
+## 2. Design Goals
 
 Unified model — RPC, state, and static sources share a common structure.
 
@@ -40,10 +46,11 @@ AI‑friendly — strict structure, no hidden behavior.
 
 Offline‑capable — sources may use cached data when RPC calls fail.
 
-3. Source Model
+## 3. Source Model
 
 A source provides data to the UI.
 
+```json
 Source {
   "id": "string",
   "type": "rpc" | "state" | "static",
@@ -51,8 +58,9 @@ Source {
   "cache": CacheConfig?,
   "onError": ErrorHandling?
 }
+```
 
-3.1 Required Fields
+### 3.1. Required Fields
 
 Field
 
@@ -86,12 +94,13 @@ no
 
 Configuration for the source.
 
-4. Source Types
+## 4. Source Types
 
-4.1 RPC Source
+### 4.1. RPC Source
 
 Fetches data from the backend.
 
+```json
 {
   "id": "entryTypes",
   "type": "rpc",
@@ -100,6 +109,7 @@ Fetches data from the backend.
     "arguments": {}
   }
 }
+```
 
 RPC Parameters
 
@@ -137,10 +147,11 @@ May be cached.
 
 May define fallback behavior.
 
-4.2 State Source
+### 4.2. State Source
 
 Reads data from page, wizard, or application state.
 
+```json
 {
   "id": "userProfile",
   "type": "state",
@@ -148,6 +159,7 @@ Reads data from page, wizard, or application state.
     "path": "app.user"
   }
 }
+```
 
 State Parameters
 
@@ -175,10 +187,11 @@ Read‑only.
 
 Ideal for global data (user, settings, cached lists).
 
-4.3 Static Source
+### 4.3. Static Source
 
 Provides fixed data.
 
+```json
 {
   "id": "materialTypes",
   "type": "static",
@@ -190,6 +203,7 @@ Provides fixed data.
     ]
   }
 }
+```
 
 Static Parameters
 
@@ -217,16 +231,18 @@ Ideal for fixed dropdowns.
 
 Supports localized fields.
 
-5. Cache Configuration
+## 5. Cache Configuration
 
 Sources may define caching behavior.
 
+```json
 CacheConfig {
   "scope": "state" | "wizard" | "app",
   "path": "app.cached.entryTypes"
 }
+```
 
-5.1 Cache Scopes
+### 5.1. Cache Scopes
 
 Scope
 
@@ -252,21 +268,23 @@ Global
 
 Persistent across navigation.
 
-5.2 Cache Behavior
+### 5.2. Cache Behavior
 
 Cached data replaces RPC calls when available.
 
 Cached data may be updated via action effects.
 
-6. Error Handling
+## 6. Error Handling
 
 Sources may define fallback behavior.
 
+```json
 ErrorHandling {
   "fallback": "app.cached.entryTypes"
 }
+```
 
-6.1 Error Behavior
+### 6.1. Error Behavior
 
 RPC errors may trigger fallback.
 
@@ -274,15 +292,15 @@ Fallback must reference a valid state path.
 
 UI runtime may show notifications via actions.
 
-7. Source Lifecycle
+## 7. Source Lifecycle
 
-7.1 Initialization
+### 7.1. Initialization
 
 RPC sources load automatically unless marked lazy.
 
 State and static sources are instantly available.
 
-7.2 Refresh
+### 7.2. Refresh
 
 Triggered by:
 
@@ -292,7 +310,7 @@ User interactions
 
 Wizard transitions
 
-7.3 Destruction
+### 7.3. Destruction
 
 Page sources destroyed on navigation.
 
@@ -300,19 +318,22 @@ Wizard sources destroyed on completion.
 
 Application sources persist.
 
-8. Interaction with Bindings
+## 8. Interaction with Bindings
 
 Fields may bind directly to sources.
 
-8.1 Field Binding
+### 8.1. Field Binding
 
+```json
 {
   "binding": "source.entryTypes",
   "mode": "oneWay"
 }
+```
 
-8.2 Dropdown Options
+### 8.2. Dropdown Options
 
+```json
 {
   "options": {
     "source": "entryTypes",
@@ -320,32 +341,38 @@ Fields may bind directly to sources.
     "displayField": "title"
   }
 }
+```
 
-8.3 Action Payloads
+### 8.3. Action Payloads
 
+```json
 {
   "payload": {
     "types": "@source.entryTypes"
   }
 }
+```
 
-9. Localization in Sources
+## 9. Localization in Sources
 
 Sources may contain localized fields.
 
 Example:
 
+```json
 {
   "id": 2,
   "title": { "key": "material.tools", "default": "Tools" }
 }
+```
 
 The UI runtime resolves localized strings.
 
-10. Examples
+## 10. Examples
 
-10.1 RPC Source
+### 10.1. RPC Source
 
+```json
 {
   "id": "entryTypes",
   "type": "rpc",
@@ -357,9 +384,11 @@ The UI runtime resolves localized strings.
     "path": "app.cached.entryTypes"
   }
 }
+```
 
-10.2 State Source
+### 10.2. State Source
 
+```json
 {
   "id": "userProfile",
   "type": "state",
@@ -367,9 +396,11 @@ The UI runtime resolves localized strings.
     "path": "app.user"
   }
 }
+```
 
-10.3 Static Source
+### 10.3. Static Source
 
+```json
 {
   "id": "materialTypes",
   "type": "static",
@@ -381,5 +412,6 @@ The UI runtime resolves localized strings.
     ]
   }
 }
+```
 
-End of Specification
+---

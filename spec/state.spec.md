@@ -1,8 +1,14 @@
-State Specification
+# State Specification
 
-Version: 1.0**Status: Draft (Stored in project)Audience: Backend systems, UI runtime engines, AI agents, and tooling that consume or generate page metadata.Scope: Defines the structure, semantics, and lifecycle of state in the Dynamic UI Meta‑Language, including page state, wizard state, and application‑wide state.
+**Version:** 1.0
 
-1. Overview
+**Status:** Draft (Stored in project)
+
+**Audience:** Backend systems, UI runtime engines, AI agents, and tooling that consume or generate page metadata.
+
+**Scope:** Defines the structure, semantics, and lifecycle of state in the Dynamic UI Meta‑Language, including page state, wizard state, and application‑wide state.
+
+## 1. Overview
 
 State represents client‑side data used by pages, wizards, and the application runtime. It is the primary mechanism for:
 
@@ -16,7 +22,7 @@ holding global application data
 
 State is semantic, declarative, and AI‑processable.
 
-2. Design Goals
+## 2. Design Goals
 
 Clear separation of scopes — page, wizard, and application state behave differently.
 
@@ -30,9 +36,9 @@ Offline‑capable — application state may persist across sessions.
 
 AI‑friendly — no implicit behavior, no hidden defaults.
 
-3. State Scopes
+## 3. State Scopes
 
-3.1 Page State (state)
+### 3.1. Page State (state)
 
 Local to a single page instance.
 
@@ -48,7 +54,7 @@ state.barcode
 state.amount
 state.material.locked
 
-3.2 Wizard State (wizard)
+### 3.2. Wizard State (wizard)
 
 Shared across all steps of a wizard.
 
@@ -64,7 +70,7 @@ wizard.materialType
 wizard.step1.amount
 wizard.summary.total
 
-3.3 Application State (app)
+### 3.3. Application State (app)
 
 Global, persistent, available everywhere.
 
@@ -80,10 +86,11 @@ app.user.id
 app.settings.language
 app.cached.entryTypes
 
-4. State Structure
+## 4. State Structure
 
 State is a hierarchical object with arbitrary nesting.
 
+```json
 {
   "state": {
     "barcode": "",
@@ -102,10 +109,11 @@ State is a hierarchical object with arbitrary nesting.
     "cached": { "entryTypes": [] }
   }
 }
+```
 
-5. State Access Rules
+## 5. State Access Rules
 
-5.1 Read Access
+### 5.1. Read Access
 
 State may be read by:
 
@@ -119,7 +127,7 @@ sources of type state
 
 computed values (future extension)
 
-5.2 Write Access
+### 5.2. Write Access
 
 State may be written only by actions:
 
@@ -133,7 +141,7 @@ wizard completion effects
 
 Bindings never write directly to state except through twoWay field bindings.
 
-6. Binding Model for State
+## 6. Binding Model for State
 
 Bindings reference state using explicit paths:
 
@@ -143,30 +151,36 @@ app.<path>
 
 Examples:
 
+```json
 {
   "source": {
     "binding": "state.barcode",
     "mode": "twoWay"
   }
 }
+```
 
+```json
 {
   "source": {
     "binding": "wizard.materialType",
     "mode": "twoWay"
   }
 }
+```
 
+```json
 {
   "source": {
     "binding": "app.settings.language",
     "mode": "twoWay"
   }
 }
+```
 
-7. State Lifecycle
+## 7. State Lifecycle
 
-7.1 Page State Lifecycle
+### 7.1. Page State Lifecycle
 
 Create: when page loads
 
@@ -176,7 +190,7 @@ Reset: via state.reset
 
 Destroy: when navigating away
 
-7.2 Wizard State Lifecycle
+### 7.2. Wizard State Lifecycle
 
 Create: when wizard starts
 
@@ -186,7 +200,7 @@ Reset: via wizard completion or cancellation
 
 Destroy: when wizard ends
 
-7.3 Application State Lifecycle
+### 7.3. Application State Lifecycle
 
 Create: at app startup
 
@@ -196,12 +210,13 @@ Persist: optional offline storage
 
 Destroy: only on logout or app reset
 
-8. State Update Actions
+## 8. State Update Actions
 
-8.1 state.update
+### 8.1. state.update
 
 Updates one or more state paths.
 
+```json
 {
   "action": "state.update",
   "targets": {
@@ -210,20 +225,24 @@ Updates one or more state paths.
     "app.settings.language": "de-DE"
   }
 }
+```
 
-8.2 state.reset
+### 8.2. state.reset
 
 Resets one or more state paths to their default values.
 
+```json
 {
   "action": "state.reset",
   "targets": ["barcode", "entryType", "locked", "amount"]
 }
+```
 
-9. Interaction with Sources
+## 9. Interaction with Sources
 
-9.1 State Source
+### 9.1. State Source
 
+```json
 {
   "id": "userProfile",
   "type": "state",
@@ -231,20 +250,24 @@ Resets one or more state paths to their default values.
     "path": "app.user"
   }
 }
+```
 
-9.2 RPC Result → State
+### 9.2. RPC Result → State
 
+```json
 {
   "action": "state.update",
   "targets": {
     "app.cached.entryTypes": "@source.entryTypes"
   }
 }
+```
 
-10. Interaction with Actions
+## 10. Interaction with Actions
 
-10.1 Payload Binding
+### 10.1. Payload Binding
 
+```json
 {
   "payload": {
     "barcode": "@state.barcode",
@@ -252,17 +275,20 @@ Resets one or more state paths to their default values.
     "userId": "@app.user.id"
   }
 }
+```
 
-10.2 Error Handling
+### 10.2. Error Handling
 
+```json
 {
   "action": "state.update",
   "targets": {
     "state.validation.barcode": "@rpcError.fieldErrors.barcode"
   }
 }
+```
 
-11. AI Agent Constraints
+## 11. AI Agent Constraints
 
 State paths must be explicit.
 
@@ -278,27 +304,33 @@ Wizard state must not be used outside wizard context.
 
 Application state must not be mutated by twoWay bindings unless explicitly allowed.
 
-12. Examples
+## 12. Examples
 
-12.1 Page State Example
+### 12.1. Page State Example
 
+```json
 {
   "binding": "state.amount",
   "mode": "twoWay"
 }
+```
 
-12.2 Wizard State Example
+### 12.2. Wizard State Example
 
+```json
 {
   "binding": "wizard.materialType",
   "mode": "twoWay"
 }
+```
 
-12.3 Application State Example
+### 12.3. Application State Example
 
+```json
 {
   "binding": "app.settings.language",
   "mode": "twoWay"
 }
+```
 
-End of Specification
+---

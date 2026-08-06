@@ -1,8 +1,12 @@
-page.spec.md
+# Page Specification
 
-Version: 1.1 Status: Updated Purpose: Defines the structure, semantics, and processing rules for Morph pages. Pages are declarative UI containers composed of fields, sources, and actions.
+**Version:** 1.1
 
-1. Overview
+**Status:** Updated
+
+**Purpose:** Defines the structure, semantics, and processing rules for Morph pages. Pages are declarative UI containers composed of fields, sources, and actions.
+
+## 1. Overview
 
 A page in Morph is a declarative metadata object that describes:
 
@@ -16,12 +20,11 @@ what actions the page can execute
 
 Pages do not define layout, styling, or rendering. The UI runtime interprets page metadata and renders it according to platform conventions.
 
-2. Page Structure
+## 2. Page Structure
 
 A page is defined as:
 
-json
-
+```json
 {
   "id": "page.example",
   "type": "page",
@@ -30,7 +33,7 @@ json
   "fields": [ ... ],
   "actions": [ ... ]
 }
-
+```
 
 Fields
 
@@ -44,7 +47,7 @@ Actions
 
 Operations triggered by user interaction (e.g., RPC calls).
 
-3. Properties
+## 3. Properties
 
 Property
 
@@ -88,22 +91,21 @@ no
 
 Array of action definitions.
 
-4. Fields
+## 4. Fields
 
 Fields define the UI elements of a page.
 
-4.1 Field Structure
+### 4.1. Field Structure
 
-json
-
+```json
 {
   "id": "fieldId",
   "type": "fieldType",
   "...typeSpecificProperties"
 }
+```
 
-
-4.2 Common Field Properties
+### 4.2. Common Field Properties
 
 Property
 
@@ -141,14 +143,13 @@ optional
 
 Semantic decorators.
 
-4.3 Binding Syntax (@bind:)
+### 4.3. Binding Syntax (@bind:)
 
 Morph supports Blazor-inspired binding syntax:
 
 Code
 
 @bind:<binding-path>
-
 
 Bindings may appear in any string property, including:
 
@@ -172,42 +173,37 @@ Examples
 
 Static label
 
-json
-
+```json
 { "id": "lbl", "type": "label", "value": "Enter tool name:" }
-
+```
 
 Dynamic label
 
-json
-
+```json
 { "id": "lbl", "type": "label", "value": "@bind:state.tool.name" }
-
+```
 
 Static text field
 
-json
-
+```json
 { "id": "name", "type": "text", "hint": "Tool name" }
-
+```
 
 Dynamic hint
 
-json
-
+```json
 { "id": "name", "type": "text", "hint": "@bind:state.tool.placeholder" }
-
+```
 
 Dynamic value (future two‑way binding)
 
-json
-
+```json
 { "id": "name", "type": "text", "value": "@bind:state.tool.name" }
+```
 
+### 4.4. Field Types
 
-4.4 Field Types
-
-4.4.1 label
+#### 4.4.1. label
 
 Displays static or bound text.
 
@@ -217,27 +213,25 @@ value — required for display
 
 Example:
 
-json
-
+```json
 {
   "id": "lbl",
   "type": "label",
   "value": "Enter tool name:"
 }
-
+```
 
 Dynamic example:
 
-json
-
+```json
 {
   "id": "lbl",
   "type": "label",
   "value": "@bind:state.tool.name"
 }
+```
 
-
-4.4.2 text
+#### 4.4.2. text
 
 Accepts user input.
 
@@ -249,54 +243,51 @@ value — optional default or bound value
 
 Example:
 
-json
-
+```json
 {
   "id": "name",
   "type": "text",
   "hint": "Tool name"
 }
-
+```
 
 Dynamic examples:
 
-json
-
+```json
 {
   "id": "name",
   "type": "text",
   "hint": "@bind:state.tool.placeholder"
 }
+```
 
-
-json
-
+```json
 {
   "id": "name",
   "type": "text",
   "value": "@bind:state.tool.name"
 }
+```
 
-
-5. Sources
+## 5. Sources
 
 Pages may reference multiple sources.
 
 json
 
+```json
 "sources": ["source.tools", "source.archive"]
-
+```
 
 Each source is resolved before fields are rendered. The UI runtime decides how to display source data.
 
-6. Actions
+## 6. Actions
 
 Actions define operations triggered by user interaction.
 
-6.1 Action Structure
+### 6.1. Action Structure
 
-json
-
+```json
 {
   "id": "submit",
   "type": "rpc",
@@ -305,9 +296,9 @@ json
     "name": "@bind:field.name"
   }
 }
+```
 
-
-6.2 Action Types
+### 6.2. Action Types
 
 Type
 
@@ -317,7 +308,7 @@ rpc
 
 Calls a backend RPC method.
 
-6.3 Parameter Binding
+### 6.3. Parameter Binding
 
 Parameters may use @bind: syntax to reference:
 
@@ -331,17 +322,15 @@ source data
 
 Example:
 
-json
-
+```json
 "parameters": {
   "id": "@bind:field.toolId"
 }
+```
 
+## 7. Example Page
 
-7. Example Page
-
-json
-
+```json
 {
   "id": "page.addTool",
   "type": "page",
@@ -370,9 +359,9 @@ json
     }
   ]
 }
+```
 
-
-8. Future Extensions
+## 8. Future Extensions
 
 additional field types (number, checkbox, dropdown, table)
 

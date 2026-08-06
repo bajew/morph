@@ -1,8 +1,14 @@
-Bindings Specification
+# Bindings Specification
 
-Version: 1.0Status: DraftAudience: Backend systems, UI runtime engines, AI agents, and tooling that consume or generate page metadata.Scope: Defines the structure, semantics, and processing rules for data bindings in the Dynamic UI Meta‑Language.
+**Version:** 1.0
 
-1. Overview
+**Status:** Draft
+
+**Audience:** Backend systems, UI runtime engines, AI agents, and tooling that consume or generate page metadata.
+
+**Scope:** Defines the structure, semantics, and processing rules for data bindings in the Dynamic UI Meta‑Language.
+
+## 1. Overview
 
 Bindings define how data flows between UI fields, client state, and data sources. They are the connective tissue of the Dynamic UI Meta‑Language.
 
@@ -28,7 +34,7 @@ Action effects
 
 Computed values (optional future extension)
 
-2. Design Goals
+## 2. Design Goals
 
 Explicit targets — no implicit binding resolution.
 
@@ -40,16 +46,18 @@ Uniform syntax — same binding model for fields and actions.
 
 AI‑friendly — strict structure, no hidden behavior.
 
-3. Binding Model
+## 3. Binding Model
 
 A binding connects a UI element to a data source.
 
+```json
 Binding {
   "binding": "state.<path>" | "source.<id>" | "computed.<id>",
   "mode": "oneWay" | "twoWay"
 }
+```
 
-3.1 Binding Targets
+### 3.1. Binding Targets
 
 Bindings may reference:
 
@@ -85,7 +93,7 @@ computed.totalPrice
 
 computed.fullName
 
-4. Binding Modes
+## 4. Binding Modes
 
 oneWay
 
@@ -105,11 +113,11 @@ UI writes back to state.
 
 Never writes directly to sources.
 
-5. Binding Lifecycle
+## 5. Binding Lifecycle
 
 Bindings follow a predictable lifecycle.
 
-5.1 Initialization
+### 5.1. Initialization
 
 On page load or wizard step entry:
 
@@ -117,7 +125,7 @@ State values are applied to fields.
 
 Source values populate lists or computed fields.
 
-5.2 Update
+### 5.2. Update
 
 Triggered by:
 
@@ -127,7 +135,7 @@ RPC responses (via action effects)
 
 State updates (state.update)
 
-5.3 Reset
+### 5.3. Reset
 
 Triggered by:
 
@@ -135,12 +143,13 @@ state.reset action effect
 
 Wizard step transitions
 
-6. Binding Usage in Fields
+## 6. Binding Usage in Fields
 
 Fields use bindings to connect UI controls to data.
 
 Example:
 
+```json
 {
   "id": "barcode",
   "type": "text",
@@ -149,40 +158,47 @@ Example:
     "mode": "twoWay"
   }
 }
+```
 
-6.1 Binding to Object Properties
+### 6.1. Binding to Object Properties
 
+```json
 {
   "binding": "state.material.locked",
   "mode": "twoWay"
 }
+```
 
-6.2 Binding to Lists
+### 6.2. Binding to Lists
 
 Used for dropdowns, multiselects, lists.
 
+```json
 {
   "binding": "source.entryTypes",
   "mode": "oneWay"
 }
+```
 
-7. Options Binding (Dropdowns & Lists)
+## 7. Options Binding (Dropdowns & Lists)
 
 Dropdowns require additional metadata to map list objects to UI.
 
+```json
 OptionsSource {
   "source": "entryTypes",
   "valueField": "id",
   "displayField": "title"
 }
+```
 
-7.1 Value Field
+### 7.1. Value Field
 
 Determines what is stored in state.
 
 Example: id
 
-7.2 Display Field
+### 7.2. Display Field
 
 Determines what is shown to the user.
 
@@ -192,17 +208,20 @@ May be a localized string.
 
 Example item:
 
+```json
 {
   "id": 2,
   "title": { "key": "material.tools", "default": "Tools" }
 }
+```
 
-8. Binding Usage in Actions
+## 8. Binding Usage in Actions
 
 Bindings are used inside action payloads and effects.
 
-8.1 Payload Binding
+### 8.1. Payload Binding
 
+```json
 {
   "method": "BookEntry",
   "payload": {
@@ -212,38 +231,46 @@ Bindings are used inside action payloads and effects.
     "amount": "@state.amount"
   }
 }
+```
 
-8.2 Effect Binding
+### 8.2. Effect Binding
 
+```json
 {
   "action": "state.update",
   "targets": {
     "material.locked": false
   }
 }
+```
 
-9. Localization in Bindings
+## 9. Localization in Bindings
 
 Bindings themselves are not localized. Localization applies to display fields.
 
 Example:
 
+```json
 {
   "displayField": "title"
 }
+```
 
 Where each item contains:
 
+```json
 {
   "title": { "key": "material.tools", "default": "Tools" }
 }
+```
 
 The UI runtime resolves localized strings.
 
-10. Examples
+## 10. Examples
 
-10.1 Binding to a List of Objects
+### 10.1. Binding to a List of Objects
 
+```json
 {
   "id": "entryType",
   "type": "select",
@@ -257,9 +284,11 @@ The UI runtime resolves localized strings.
     "displayField": "title"
   }
 }
+```
 
-10.2 Binding to a Property of an Object
+### 10.2. Binding to a Property of an Object
 
+```json
 {
   "id": "locked",
   "type": "boolean",
@@ -268,5 +297,6 @@ The UI runtime resolves localized strings.
     "mode": "twoWay"
   }
 }
+```
 
-End of Specification
+---
