@@ -83,8 +83,11 @@ namespace MorphMWP
 
     public class MenuItemMetadata
     {
+        public string Id { get; set; }
         public string Title { get; set; }
         public string Navigate { get; set; } // menu or page id
+        public List<string> Tags { get; set; } = new();
+        public string VisibleWhen { get; set; }
     }
 
     public class PageMetadata
@@ -101,22 +104,30 @@ namespace MorphMWP
     {
         public string Id { get; set; }
         public string Type { get; set; } // "label", "text"
-        public string Text { get; set; } // for label
+        public string Value { get; set; }
+        public string Hint { get; set; }
+        public List<string> Tags { get; set; } = new();
     }
 
     public class ActionMetadata
     {
         public string Id { get; set; }
         public string Type { get; set; } // "rpc"
-        public string RpcMethod { get; set; }
+        public string Title { get; set; }
+        public string Method { get; set; }
         public Dictionary<string, string> Parameters { get; set; } = new();
     }
 
     public class SourceMetadata
     {
         public string Id { get; set; }
-        public string Type { get; set; } // "source"
-        public string RpcMethod { get; set; }
+        public string Type { get; set; } // "rpc", "state", or "static"
+        public SourceParameters Parameters { get; set; }
+    }
+
+    public class SourceParameters
+    {
+        public string Method { get; set; }
     }
 
     // ----------------- Metadata Loader -----------------
@@ -261,23 +272,23 @@ namespace MorphMWP
             }
 
             // Field runtime: labels + text prompts
-            var fieldValues = new Dictionary<string, string>();
+            var pageState = new Dictionary<string, string>();
 
             foreach (var field in page.Fields)
             {
                 if (field.Type == "label")
                 {
-                    Console.WriteLine(field.Text);
+                    Console.WriteLine(ResolveValue(field.Value, pageState));
                 }
                 else if (field.Type == "text")
                 {
                     while (true)
                     {
-                        Console.Write($"{field.Id}: ");
+                        Console.Write($"{ResolveValue(field.Hint, pageState) ?? field.Id}: ");
                         var value = Console.ReadLine();
                         if (!string.IsNullOrWhiteSpace(value))
                         {
-                            fieldValues[field.Id] = value;
+                            SetTwoWayValue(field.Value, value, pageState);
                             break;
                         }
                         Console.WriteLine("Invalid input, please try again.");
@@ -289,7 +300,7 @@ namespace MorphMWP
             var submit = page.Actions.FirstOrDefault();
             if (submit != null)
             {
-                ExecuteAction(submit, fieldValues);
+                ExecuteAction(submit, pageState);
                 Console.WriteLine("\nAction executed. Press ENTER to return to Main Menu...");
                 Console.ReadLine();
             }
@@ -304,7 +315,7 @@ namespace MorphMWP
 
         static List<Tool> ExecuteSource(SourceMetadata source)
         {
-            return source.RpcMethod switch
+            return source.Parameters?.Method switch
             {
                 "GetTools" => ToolService.GetTools(),
                 "GetArchive" => ToolService.GetArchive(),
@@ -312,25 +323,15 @@ namespace MorphMWP
             };
         }
 
-        static void ExecuteAction(ActionMetadata action, Dictionary<string, string> fieldValues)
+        static void ExecuteAction(ActionMetadata action, Dictionary<string, string> pageState)
         {
-            // Bind parameters
             var boundParams = new Dictionary<string, string>();
             foreach (var kv in action.Parameters)
             {
-                var key = kv.Key;
-                var binding = kv.Value; // e.g. "@field.name"
-                if (binding.StartsWith("@field."))
-                {
-                    var fieldId = binding.Substring("@field.".Length);
-                    if (fieldValues.TryGetValue(fieldId, out var val))
-                    {
-                        boundParams[key] = val;
-                    }
-                }
+                boundParams[kv.Key] = ResolveValue(kv.Value, pageState);
             }
 
-            switch (action.RpcMethod)
+            switch (action.Method)
             {
                 case "AddTool":
                     if (boundParams.TryGetValue("name", out var name))
@@ -347,6 +348,24 @@ namespace MorphMWP
                         ToolService.CheckMaintenance(mid);
                     break;
             }
+        }
+
+        static string ResolveValue(string value, Dictionary<string, string> pageState)
+        {
+            if (string.IsNullOrEmpty(value) || !value.StartsWith("@"))
+                return value;
+
+            var path = value[1..];
+            return path.StartsWith("state.") && pageState.TryGetValue(path, out var resolved)
+                ? resolved
+                : string.Empty;
+        }
+
+        static void SetTwoWayValue(string binding, string value, Dictionary<string, string> pageState)
+        {
+            const string prefix = "@bind:state.";
+            if (binding?.StartsWith(prefix) == true)
+                pageState[$"state.{binding[prefix.Length..]}"] = value;
         }
     }
 }

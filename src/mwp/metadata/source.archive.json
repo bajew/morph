@@ -1,5 +1,8 @@
 {
   "id": "source.archive",
-  "type": "source",
-  "rpcMethod": "GetArchive"
+  "type": "rpc",
+  "parameters": {
+    "method": "GetArchive",
+    "arguments": {}
+  }
 }

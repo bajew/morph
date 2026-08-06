@@ -4,16 +4,17 @@
   "title": "Delete Tool",
   "sources": ["source.tools"],
   "fields": [
-    { "id": "lbl", "type": "label", "text": "Enter tool ID to archive:" },
-    { "id": "id", "type": "text" }
+    { "id": "lbl", "type": "label", "value": "Enter tool ID to archive:" },
+    { "id": "id", "type": "text", "hint": "Tool ID", "value": "@bind:state.id" }
   ],
   "actions": [
     {
       "id": "submit",
       "type": "rpc",
-      "rpcMethod": "DeleteTool",
+      "title": "Archive tool",
+      "method": "DeleteTool",
       "parameters": {
-        "id": "@field.id"
+        "id": "@state.id"
       }
     }
   ]

@@ -3,6 +3,6 @@
   "type": "menu",
   "title": "Archive",
   "items": [
-    { "title": "List Archived Tools", "navigate": "page.archive" }
+    { "id": "listArchivedTools", "title": "List Archived Tools", "navigate": "page.archive" }
   ]
 }

@@ -1,5 +1,8 @@
 {
   "id": "source.tools",
-  "type": "source",
-  "rpcMethod": "GetTools"
+  "type": "rpc",
+  "parameters": {
+    "method": "GetTools",
+    "arguments": {}
+  }
 }

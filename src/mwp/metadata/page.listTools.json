@@ -4,7 +4,7 @@
   "title": "Tools",
   "sources": ["source.tools"],
   "fields": [
-    { "id": "lbl", "type": "label", "text": "Available tools:" }
+    { "id": "lbl", "type": "label", "value": "Available tools:" }
   ],
   "actions": []
 }

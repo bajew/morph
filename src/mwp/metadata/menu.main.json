@@ -3,8 +3,8 @@
   "type": "menu",
   "title": "Main Menu",
   "items": [
-    { "title": "Store", "navigate": "menu.store" },
-    { "title": "Maintenance", "navigate": "menu.maintenance" },
-    { "title": "Archive", "navigate": "menu.archive" }
+    { "id": "store", "title": "Store", "navigate": "menu.store" },
+    { "id": "maintenance", "title": "Maintenance", "navigate": "menu.maintenance" },
+    { "id": "archive", "title": "Archive", "navigate": "menu.archive" }
   ]
 }

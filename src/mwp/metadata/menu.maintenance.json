@@ -3,6 +3,6 @@
   "type": "menu",
   "title": "Maintenance",
   "items": [
-    { "title": "Check Tool Maintenance", "navigate": "page.maintenance" }
+    { "id": "checkMaintenance", "title": "Check Tool Maintenance", "navigate": "page.maintenance" }
   ]
 }

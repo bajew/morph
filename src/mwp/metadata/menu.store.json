@@ -3,8 +3,8 @@
   "type": "menu",
   "title": "Store",
   "items": [
-    { "title": "List Tools", "navigate": "page.listTools" },
-    { "title": "Add Tool", "navigate": "page.addTool" },
-    { "title": "Delete Tool", "navigate": "page.deleteTool" }
+    { "id": "listTools", "title": "List Tools", "navigate": "page.listTools" },
+    { "id": "addTool", "title": "Add Tool", "navigate": "page.addTool" },
+    { "id": "deleteTool", "title": "Delete Tool", "navigate": "page.deleteTool" }
   ]
 }

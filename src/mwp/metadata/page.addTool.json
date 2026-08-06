@@ -4,16 +4,17 @@
   "title": "Add Tool",
   "sources": [],
   "fields": [
-    { "id": "lbl", "type": "label", "text": "Enter tool name:" },
-    { "id": "name", "type": "text" }
+    { "id": "lbl", "type": "label", "value": "Enter tool name:" },
+    { "id": "name", "type": "text", "hint": "Tool name", "value": "@bind:state.name" }
   ],
   "actions": [
     {
       "id": "submit",
       "type": "rpc",
-      "rpcMethod": "AddTool",
+      "title": "Add tool",
+      "method": "AddTool",
       "parameters": {
-        "name": "@field.name"
+        "name": "@state.name"
       }
     }
   ]
