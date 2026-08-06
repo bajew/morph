@@ -38,7 +38,7 @@ Computed values (optional future extension)
 
 Explicit targets — no implicit binding resolution.
 
-Simple modes — oneWay and twoWay only.
+Explicit direction — the binding prefix determines whether a value is read or read and written.
 
 Predictable lifecycle — initialization, update, reset.
 
@@ -48,14 +48,14 @@ AI‑friendly — strict structure, no hidden behavior.
 
 ## 3. Binding Model
 
-A binding connects a UI element to a data source.
+A binding connects a UI element to a value path. Its prefix specifies its direction.
 
-```json
-Binding {
-  "binding": "state.<path>" | "source.<id>" | "computed.<id>",
-  "mode": "oneWay" | "twoWay"
-}
+```text
+One-way: @<path>
+Two-way: @bind:<path>
 ```
+
+`@<path>` reads a value from the binding context. `@bind:<path>` reads a value and writes user changes back to that path.
 
 ### 3.1. Binding Targets
 
@@ -63,15 +63,19 @@ Bindings may reference:
 
 State Binding
 
-state.<path>
+state.<path>, wizard.<path>, or app.<path>
 
 Examples:
 
-state.barcode
+@state.barcode
 
-state.material.locked
+@state.material.locked
 
-state.entryType
+@state.entryType
+
+@wizard.materialType
+
+@app.user.id
 
 Source Binding
 
@@ -79,9 +83,9 @@ source.<id>
 
 Examples:
 
-source.entryTypes
+@source.entryTypes
 
-source.userProfile
+@source.userProfile
 
 Computed Binding (future extension)
 
@@ -89,13 +93,13 @@ computed.<id>
 
 Examples:
 
-computed.totalPrice
+@computed.totalPrice
 
-computed.fullName
+@computed.fullName
 
 ## 4. Binding Modes
 
-oneWay
+One-way (`@<path>`)
 
 Data flows from state/source to UI.
 
@@ -103,7 +107,7 @@ UI cannot modify the underlying data.
 
 Used for read‑only fields.
 
-twoWay
+Two-way (`@bind:<path>`)
 
 Data flows both ways:
 
@@ -129,7 +133,7 @@ Source values populate lists or computed fields.
 
 Triggered by:
 
-User input (for twoWay bindings)
+User input (for two-way bindings)
 
 RPC responses (via action effects)
 
@@ -153,20 +157,14 @@ Example:
 {
   "id": "barcode",
   "type": "text",
-  "source": {
-    "binding": "state.barcode",
-    "mode": "twoWay"
-  }
+  "value": "@bind:state.barcode"
 }
 ```
 
 ### 6.1. Binding to Object Properties
 
 ```json
-{
-  "binding": "state.material.locked",
-  "mode": "twoWay"
-}
+"@bind:state.material.locked"
 ```
 
 ### 6.2. Binding to Lists
@@ -174,10 +172,7 @@ Example:
 Used for dropdowns, multiselects, lists.
 
 ```json
-{
-  "binding": "source.entryTypes",
-  "mode": "oneWay"
-}
+"@source.entryTypes"
 ```
 
 ## 7. Options Binding (Dropdowns & Lists)
@@ -274,10 +269,7 @@ The UI runtime resolves localized strings.
 {
   "id": "entryType",
   "type": "select",
-  "source": {
-    "binding": "state.entryType",
-    "mode": "twoWay"
-  },
+  "value": "@bind:state.entryType",
   "options": {
     "source": "entryTypes",
     "valueField": "id",
@@ -292,10 +284,7 @@ The UI runtime resolves localized strings.
 {
   "id": "locked",
   "type": "boolean",
-  "source": {
-    "binding": "state.material.locked",
-    "mode": "twoWay"
-  }
+  "value": "@bind:state.material.locked"
 }
 ```
 

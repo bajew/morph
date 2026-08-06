@@ -143,13 +143,16 @@ optional
 
 Semantic decorators.
 
-### 4.3. Binding Syntax (@bind:)
+### 4.3. Binding Syntax
 
-Morph supports Blazor-inspired binding syntax:
+Morph uses prefix-based binding expressions:
 
-Code
+```text
+@<path>       One-way: reads a value.
+@bind:<path>  Two-way: reads a value and writes user changes back to the path.
+```
 
-@bind:<binding-path>
+Use `@<path>` for display values, hints, options, visibility, and action inputs. Use `@bind:<path>` only for an editable field value backed by writable `state`, `wizard`, or `app` state.
 
 Bindings may appear in any string property, including:
 
@@ -161,13 +164,13 @@ future properties such as options, visibility, etc.
 
 Binding Resolution Rules
 
-If a property contains @bind:<path>, the engine resolves the binding.
+If a property contains a binding expression, the engine resolves the path.
 
-The resolved value overrides any static value.
+The resolved value supplies the property value.
 
-Bound fields may update automatically when state changes (future behavior).
+One-way fields update when their source value changes.
 
-Text fields may support two-way binding (future behavior).
+Two-way fields write user changes to their bound state path.
 
 Examples
 
@@ -180,7 +183,7 @@ Static label
 Dynamic label
 
 ```json
-{ "id": "lbl", "type": "label", "value": "@bind:state.tool.name" }
+{ "id": "lbl", "type": "label", "value": "@state.tool.name" }
 ```
 
 Static text field
@@ -192,10 +195,10 @@ Static text field
 Dynamic hint
 
 ```json
-{ "id": "name", "type": "text", "hint": "@bind:state.tool.placeholder" }
+{ "id": "name", "type": "text", "hint": "@state.tool.placeholder" }
 ```
 
-Dynamic value (future two‑way binding)
+Dynamic value (two-way binding)
 
 ```json
 { "id": "name", "type": "text", "value": "@bind:state.tool.name" }
@@ -227,7 +230,7 @@ Dynamic example:
 {
   "id": "lbl",
   "type": "label",
-  "value": "@bind:state.tool.name"
+  "value": "@state.tool.name"
 }
 ```
 
@@ -257,7 +260,7 @@ Dynamic examples:
 {
   "id": "name",
   "type": "text",
-  "hint": "@bind:state.tool.placeholder"
+  "hint": "@state.tool.placeholder"
 }
 ```
 
@@ -291,9 +294,9 @@ Actions define operations triggered by user interaction.
 {
   "id": "submit",
   "type": "rpc",
-  "rpcMethod": "AddTool",
+  "method": "AddTool",
   "parameters": {
-    "name": "@bind:field.name"
+    "name": "@state.name"
   }
 }
 ```
@@ -310,11 +313,11 @@ Calls a backend RPC method.
 
 ### 6.3. Parameter Binding
 
-Parameters may use @bind: syntax to reference:
-
-field values
+Parameters use one-way `@<path>` expressions to reference:
 
 state
+
+wizard and application state
 
 computed values
 
@@ -324,7 +327,7 @@ Example:
 
 ```json
 "parameters": {
-  "id": "@bind:field.toolId"
+  "id": "@state.toolId"
 }
 ```
 
@@ -345,36 +348,19 @@ Example:
     {
       "id": "name",
       "type": "text",
-      "hint": "Tool name"
+      "hint": "Tool name",
+      "value": "@bind:state.name"
     }
   ],
   "actions": [
     {
       "id": "submit",
       "type": "rpc",
-      "rpcMethod": "AddTool",
+      "method": "AddTool",
       "parameters": {
-        "name": "@bind:field.name"
+        "name": "@state.name"
       }
     }
   ]
 }
 ```
-
-## 8. Future Extensions
-
-additional field types (number, checkbox, dropdown, table)
-
-computed values
-
-conditional visibility
-
-validation rules
-
-two-way binding
-
-dynamic navigation
-
-wizard pages
-
-Your fully updated page.spec.md is now recreated and ready in Creations.

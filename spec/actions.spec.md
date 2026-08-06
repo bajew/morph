@@ -55,6 +55,7 @@ Action {
   "id": "string",
   "title": LocalizedString,
   "type": "rpc" | "navigate" | "state.update" | "state.reset" | "ui.notify",
+  "method": "string"?,
   "parameters": object?,
   "onSuccess": ActionEffect[]?,
   "onFailure": ActionEffect[]?
@@ -106,18 +107,16 @@ Calls a backend RPC method.
   "id": "bookEntry",
   "type": "rpc",
   "title": { "key": "action.book", "default": "Book" },
+  "method": "BookEntry",
   "parameters": {
-    "method": "BookEntry",
-    "payload": {
-      "barcode": "@state.barcode",
-      "entryType": "@wizard.materialType",
-      "userId": "@app.user.id"
-    }
+    "barcode": "@state.barcode",
+    "entryType": "@wizard.materialType",
+    "userId": "@app.user.id"
   }
 }
 ```
 
-RPC Parameters
+RPC Fields
 
 Field
 
@@ -135,13 +134,13 @@ yes
 
 RPC method name.
 
-payload
+parameters
 
 object
 
 no
 
-RPC payload.
+Parameters passed to the RPC method.
 
 ### 4.2. Navigation Action
 
@@ -408,15 +407,20 @@ Page navigation may reset page state.
 
 ## 8. Interaction with Bindings
 
-Actions may reference state, wizard, and application data.
+Actions may reference state, wizard, application, source, computed, and error data using one-way `@<path>` expressions. Actions and effects must not use `@bind:<path>`, because they do not accept user input.
 
 ### 8.1. Payload Binding
 
-"payload": {
-  "barcode": "@state.barcode",
-  "entryType": "@wizard.materialType",
-  "userId": "@app.user.id"
+```json
+{
+  "method": "BookEntry",
+  "parameters": {
+    "barcode": "@state.barcode",
+    "entryType": "@wizard.materialType",
+    "userId": "@app.user.id"
+  }
 }
+```
 
 ### 8.2. Effect Binding
 
@@ -456,14 +460,12 @@ Example:
   "id": "bookEntry",
   "title": { "key": "action.book", "default": "Book" },
   "type": "rpc",
+  "method": "BookEntry",
   "parameters": {
-    "method": "BookEntry",
-    "payload": {
-      "barcode": "@state.barcode",
-      "entryType": "@state.entryType",
-      "locked": "@state.locked",
-      "amount": "@state.amount"
-    }
+    "barcode": "@state.barcode",
+    "entryType": "@state.entryType",
+    "locked": "@state.locked",
+    "amount": "@state.amount"
   },
   "onSuccess": [
     { "action": "state.reset", "targets": ["barcode", "entryType", "locked", "amount"] },
