@@ -86,11 +86,13 @@ pages
 
 ## 3. Tag Structure
 
-Tags are simple strings:
+The `tags` property is an array of strings:
 
 ```json
 "tags": ["tagName1", "tagName2", ...]
 ```
+
+`tags` must always be an array, including when an element has only one tag. Boolean values and single-string shorthand are not valid.
 
 Tags must be:
 
@@ -270,7 +272,7 @@ Metadata:
   "id": "toolsTable",
   "type": "table",
   "source": "tools",
-  "tags": true
+  "tags": ["maintenanceDue"]
 }
 ```
 
