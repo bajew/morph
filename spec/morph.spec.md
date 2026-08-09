@@ -1,8 +1,8 @@
 # Morph Specification
 
-**Version:** 1.1
+**Version:** 1.2 (Consolidated)
 
-**Status:** Master Specification (Updated)
+**Status:** Master Specification (Updated with consolidated specs)
 
 **Purpose:** Defines the vision, architecture, completed specifications, and remaining open points for the Morph meta‑language engine and runtime.
 
@@ -98,13 +98,9 @@ debugging tools
 
 Morph currently includes the following specifications:
 
-✔ dynamic-state-model.spec.md
+✔ state-model.spec.md
 
-Defines the dynamic, hierarchical, observable state engine.
-
-✔ state.spec.md
-
-Defines state scopes, access rules, lifecycle, and state update actions.
+**Consolidated:** Merged from `state.spec.md` + `dynamic-state-model.spec.md`. Defines the dynamic, hierarchical, observable state engine with scopes, lifecycle, access rules, and C# implementation.
 
 ✔ sources.spec.md
 
@@ -112,7 +108,7 @@ Defines RPC, state, and static data sources, including caching and fallback beha
 
 ✔ page.spec.md
 
-Defines page structure, fields, bindings, sources, and page actions.
+**Updated:** Removed duplicate binding syntax section. Now references `bindings.spec.md` with comprehensive cross-reference table. Defines page structure, fields, sources, and page actions.
 
 ✔ wizard.spec.md
 
@@ -137,6 +133,10 @@ Defines declarative menus, navigation entries, actions, visibility, and tags.
 ✔ morph.spec.md
 
 Master specification (this document).
+
+📖 **CONSOLIDATION_GUIDE.md**
+
+Migration guide for the consolidated specifications. Explains what changed, why, and how to use the new structure.
 
 ## 4. Open Specifications
 
