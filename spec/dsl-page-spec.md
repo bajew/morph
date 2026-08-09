@@ -1,15 +1,17 @@
 # Morph Page DSL Specification
-# Version: 0.2
+# Version: 0.3
 # Status: Draft
-# Scope: Minimal page constructs (labels + entries + selects + buttons)
+# Scope: Pages + labels + entries + selects + buttons + tables + rowactions + separator
 
 ## 1. Overview
-The Morph Page DSL defines simple user interface pages.
+The Morph Page DSL defines declarative user interface pages.
 A page consists of:
 - a page declaration
 - an optional title
-- a list of UI elements (label, entry, select, button)
+- a list of UI elements (label, entry, select, button, table)
 - optional taglists at both page and element level
+
+Tables are defined inside pages using a **flat structure** and a **mandatory separator** (`---`) to avoid nesting ambiguity.
 
 The DSL mirrors the structure of menu items:
 ```
@@ -29,181 +31,177 @@ page <Identifier>: [<TagList>]
 
 Rules:
 - `page` is a reserved keyword.
-- `<Identifier>` must be a valid name (letters, digits, underscores; no spaces).
-- A colon `:` starts the page block.
+- `<Identifier>` must be a valid name.
 - Taglist is optional.
 - Page body must be indented consistently.
-
-Examples:
-```
-page UserSettings:
-page UserSettings: [access-user, translationkey-usersettings]
-```
 
 ---
 
 ## 3. Page Body
 
-The page body may contain:
-- an optional title declaration
-- zero or more element items
+May contain:
+- optional title
+- element items
+- table definitions
 
-### 3.1 Title (optional)
+### 3.1 Title
 
 ```
 title "<Text>"
-```
-
-Rules:
-- Title is optional.
-- Title text must be a quoted string.
-
-Example:
-```
-title "User Settings"
 ```
 
 ---
 
 ## 4. Elements
 
-Elements follow the same structural pattern as menu items:
+Elements follow:
 
 ```
-- <ElementType> -> <ElementDefinition> [<TagList>]
+- <ElementType> -> @<kind>:<path> [<TagList>]
 ```
 
 ### 4.1 Element Types
-
-Supported element types in version 0.2:
 
 ```
 label
 entry
 select
 button
+table
 ```
 
 ---
 
 ## 5. Element Definitions
 
-Element definitions use the unified `@kind:path` syntax.
-
-### 5.1 Label Definition
+### 5.1 Label
 
 ```
 @text:<Identifier>
 ```
 
-Example:
-```
-- label -> @text:UserName [decoration-info]
-```
-
----
-
-### 5.2 Entry Definition (input field)
+### 5.2 Entry (input)
 
 ```
 @bind:<Path>
 ```
 
-Where `<Path>` is typically a state or model reference.
-
-Example:
-```
-- entry -> @bind:state.UserName [type-text, required]
-```
-
----
-
-### 5.3 Select Definition (combobox)
+### 5.3 Select (combobox)
 
 ```
 @source:<Identifier>
 ```
 
-Example:
-```
-- select -> @source:CountryNames [type-combobox]
-```
-
----
-
-### 5.4 Button Definition (action trigger)
+### 5.4 Button (page-level action)
 
 ```
 @action:<Identifier>
 ```
 
-Example:
+---
+
+## 6. Table Definition
+
+Tables are defined **inside pages**, using a flat structure and a mandatory separator.
+
+### 6.1 Syntax
+
 ```
-- button -> @action:SaveUser [decoration-primary]
+table <Identifier> @source:<Source>:
+    <TableBody>
+    ---
 ```
 
-More examples:
+### 6.2 Table Body
+
+A table body consists of **flat element items**:
+
 ```
-- button -> @action:DeleteUser [danger, access-admin]
-- button -> @action:RefreshData [icon-refresh]
+- <ColumnLabel> -> @bind:<Path> [tags]
+- <ColumnLabel> -> @source:<Identifier> [tags]
+- <ActionLabel> -> @rowaction:<Identifier> [tags]
+```
+
+### 6.3 Column Definitions
+
+Columns use the same menu-style syntax:
+
+```
+- Name -> @bind:UserName
+- Email -> @bind:Email
+- Role -> @bind:Role
+```
+
+### 6.4 Row Actions
+
+Row actions are defined **at the same level as columns**, using:
+
+```
+@rowaction:<Identifier>
+```
+
+Example:
+
+```
+- Edit -> @rowaction:EditUser
+- Delete -> @rowaction:DeleteUser [danger]
+```
+
+### 6.5 Row Action Semantics
+
+- Row actions always operate on the **selected row**.
+- The DSL does not specify how the UI renders them.
+- The UI may choose:
+  - inline row buttons
+  - toolbar buttons
+  - context menus
+  - swipe actions
+  - long-press menus
+- The DSL stays UI-agnostic.
+
+### 6.6 Separator
+
+The separator `---` **must** appear after the last table item.
+
+It marks the end of the table definition and prevents nesting ambiguity.
+
+Example:
+
+```
+table Users @source:Users:
+  - Id -> @bind:Id [hidden]
+  - Name -> @bind:UserName
+  - Email -> @bind:Email
+  - Role -> @bind:Role
+
+  - Edit -> @rowaction:EditUser
+  - Delete -> @rowaction:DeleteUser [danger]
+  ---
 ```
 
 ---
 
-## 6. Taglists
-
-### 6.1 Taglist Syntax
+## 7. Taglists
 
 ```
 [ tag1, tag2, tag3 ]
 ```
 
-Rules:
-- Taglist is optional.
-- Tags are comma-separated.
-- Tags must be identifiers.
-- Whitespace around commas is allowed.
-- Taglist must be enclosed in square brackets.
-
-### 6.2 Tag Definition
-
-```
-<Tag> ::= <Identifier>
-```
-
-Examples:
-- `[type-text]`
-- `[required]`
-- `[decoration-info]`
-- `[decoration-primary, icon-save]`
-
-### 6.3 Tag Semantics
-Tags have no predefined meaning in version 0.2.
-They are metadata for:
-- permissions
-- styling
-- translation keys
-- validation
-- analytics
-- future extensions
+Tags are metadata only.
 
 ---
 
-## 7. Constraints
+## 8. Constraints
 
-### 7.1 Page Constraints
-- Page names must be unique within a file.
-- Element identifiers inside `@text`, `@bind`, `@source`, and `@action` must be valid names.
-- Title may appear at most once.
-- Only `label`, `entry`, `select`, and `button` elements may appear inside a page block.
-
-### 7.2 Syntax Constraints
-- Indentation must be consistent within a page block.
-- No sections, layout constructs, tables, forms, or actions beyond `@action:<Identifier>` are allowed in version 0.2.
+- No nested blocks inside tables beyond the table declaration.
+- The separator `---` is mandatory after table body.
+- No UI-specific semantics (tap, click, command, gesture).
+- Row actions must use `@rowaction:` and must not appear inside columns.
+- Page-level actions must use `@action:`.
 
 ---
 
-## 8. Grammar (EBNF)
+## 9. Grammar (EBNF)
 
 ```
 PageFile      = (AppDecl | PageDecl)* ;
@@ -212,7 +210,7 @@ AppDecl       = "app", Identifier, Version ;
 
 PageDecl      = "page", Identifier, ":", [ TagList ], PageBody ;
 
-PageBody      = ( TitleDecl | ElementItem )* ;
+PageBody      = ( TitleDecl | ElementItem | TableDecl )* ;
 
 TitleDecl     = "title", QuotedString ;
 
@@ -221,6 +219,20 @@ ElementItem   = "-", ElementType, "->", ElementDef, [ TagList ] ;
 ElementType   = "label" | "entry" | "select" | "button" ;
 
 ElementDef    = TextDef | BindDef | SourceDef | ActionDef ;
+
+TableDecl     = "table", Identifier, "@source:", Identifier, ":", TableBody, Separator ;
+
+TableBody     = ( TableItem )* ;
+
+TableItem     = "-", TableLabel, "->", TableDef, [ TagList ] ;
+
+TableLabel    = Identifier ;
+
+TableDef      = BindDef | SourceDef | RowActionDef ;
+
+RowActionDef  = "@rowaction:", Identifier ;
+
+Separator     = "---" ;
 
 TextDef       = "@text:", Identifier ;
 BindDef       = "@bind:", Path ;
@@ -239,32 +251,34 @@ Version       = Identifier ;
 
 ---
 
-## 9. Example (Pages Only)
+## 10. Example
 
 ```
 app MorphDemo 1.0
 
-page UserSettings: [access-user]
-  title "User Settings"
+page UserManagement:
+  title "User Management"
 
-  - label -> @text:UserName [decoration-info]
-  - entry -> @bind:state.UserName [type-text, required]
+  table Users @source:Users:
+    - Id -> @bind:Id [hidden]
+    - Name -> @bind:UserName
+    - Email -> @bind:Email
+    - Role -> @bind:Role
 
-  - label -> @text:Email
-  - entry -> @bind:state.Email [type-text, required]
+    - Edit -> @rowaction:EditUser
+    - Delete -> @rowaction:DeleteUser [danger]
+    ---
 
-  - label -> @text:Country
-  - select -> @source:CountryNames [type-combobox]
-
-  - label -> @text:IsActive
-  - entry -> @bind:state.IsActive [type-switch]
-
-  - button -> @action:SaveUser [decoration-primary]
-  - button -> @action:DeleteUser [danger, access-admin]
+  - button -> @action:AddUser [decoration-primary]
+  - button -> @action:DeleteSelected [danger]
 ```
 
 ---
 
-## 10. Version Notes
-- Version 0.2 adds **buttons**.
-- Tables/datagrids will be introduced in version 0.3 or later.
+## 11. Version Notes
+- Version 0.3 adds:
+  - tables inside pages
+  - flat column + rowaction definitions
+  - mandatory `---` separator
+- No UI-specific semantics.
+- No nested blocks beyond the table declaration.
